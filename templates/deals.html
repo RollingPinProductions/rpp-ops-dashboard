@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block page_title %}Sponsor pipeline, obligations, and payment status.{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Deal Management</p>
+        <h3>Track revenue, deadlines, fulfillment, and payments.</h3>
+      </div>
+      <a class="button" href="{{ url_for('create_deal') }}">Add Deal</a>
+    </div>
+
+    <div class="panel">
+      {% if deals %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th>Value</th>
+                <th>Type</th>
+                <th>Guarantee</th>
+                <th>Status</th>
+                <th>Deadline</th>
+                <th>Video</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for deal in deals %}
+                <tr>
+                  <td>{{ deal["brand_name"] }}</td>
+                  <td>${{ "%.2f"|format(deal["deal_value"]) }}</td>
+                  <td>{{ deal["deal_type"] }}</td>
+                  <td>{{ deal["view_guarantee"] or "—" }}</td>
+                  <td><span class="pill">{{ deal["status"] }}</span></td>
+                  <td>{{ deal["deadline"] or deal["fulfillment_month"] or "—" }}</td>
+                  <td>
+                    {% if deal["video_id"] %}
+                      <a class="inline-link" href="{{ url_for('video_detail', video_id=deal['video_id']) }}">{{ deal["video_title"] }}</a>
+                    {% else %}
+                      Unassigned
+                    {% endif %}
+                  </td>
+                  <td class="actions">
+                    <a class="text-link" href="{{ url_for('edit_deal', deal_id=deal['id']) }}">Edit</a>
+                    <form method="post" action="{{ url_for('delete_deal', deal_id=deal['id']) }}" onsubmit="return confirm('Delete this deal?');">
+                      <button class="text-link danger" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No deals yet</h3>
+          <p>Add sponsor opportunities as soon as they start moving.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

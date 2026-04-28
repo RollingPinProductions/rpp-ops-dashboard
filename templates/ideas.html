@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page_title %}Idea backlog ranked by upside and feasibility.{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Idea Capture System</p>
+        <h3>Capture fast, enrich later, promote when ready.</h3>
+      </div>
+      <a class="button" href="{{ url_for('create_idea') }}">Add Idea</a>
+    </div>
+
+    <div class="panel">
+      {% if ideas %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Idea</th>
+                <th>Score</th>
+                <th>Effort</th>
+                <th>Est. Views</th>
+                <th>Sponsor</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for idea in ideas %}
+                <tr>
+                  <td>{{ idea["title"] }}</td>
+                  <td>{{ "%.1f"|format(idea["score"]) }}</td>
+                  <td>{{ idea["effort"] or "Unset" }}</td>
+                  <td>{{ idea["estimated_views"] or "—" }}</td>
+                  <td>{{ "High" if idea["sponsor_potential"] else "Low" }}</td>
+                  <td>{{ idea["status"] }}</td>
+                  <td class="actions">
+                    <a class="text-link" href="{{ url_for('edit_idea', idea_id=idea['id']) }}">Edit</a>
+                    {% if idea["status"] != "Promoted" %}
+                      <form method="post" action="{{ url_for('promote_idea', idea_id=idea['id']) }}">
+                        <button class="text-link" type="submit">Promote</button>
+                      </form>
+                    {% elif idea["promoted_video_id"] %}
+                      <a class="text-link" href="{{ url_for('video_detail', video_id=idea['promoted_video_id']) }}">Open Video</a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No ideas yet</h3>
+          <p>Use the quick capture form on the dashboard or create a fully-scored idea here.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

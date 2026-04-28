@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Deal Setup</p>
+        <h3>{{ form_title }}</h3>
+      </div>
+      <a class="button subtle" href="{{ url_for('deals_index') }}">Back to Deals</a>
+    </div>
+
+    <form method="post" class="panel form-grid">
+      <label>
+        <span>Brand Name</span>
+        <input type="text" name="brand_name" value="{{ request.form.get('brand_name', deal['brand_name'] if deal else '') }}" required>
+      </label>
+
+      <label>
+        <span>Deal Value</span>
+        <input type="number" name="deal_value" min="0" step="0.01" value="{{ request.form.get('deal_value', deal['deal_value'] if deal else '') }}" required>
+      </label>
+
+      <label>
+        <span>Type</span>
+        <select name="deal_type" required>
+          {% set selected_type = request.form.get('deal_type', deal['deal_type'] if deal else 'Flat') %}
+          {% for option in deal_types %}
+            <option value="{{ option }}" {% if selected_type == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>View Guarantee</span>
+        <input type="number" name="view_guarantee" min="0" step="1" value="{{ request.form.get('view_guarantee', deal['view_guarantee'] if deal else '') }}">
+      </label>
+
+      <label>
+        <span>Status</span>
+        <select name="status" required>
+          {% set selected_status = request.form.get('status', deal['status'] if deal else 'Negotiating') %}
+          {% for option in status_options %}
+            <option value="{{ option }}" {% if selected_status == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Deadline</span>
+        <input type="date" name="deadline" value="{{ request.form.get('deadline', deal['deadline'] if deal else '') }}">
+      </label>
+
+      <label>
+        <span>Fulfillment Month</span>
+        <input type="month" name="fulfillment_month" value="{{ request.form.get('fulfillment_month', deal['fulfillment_month'] if deal else '') }}">
+      </label>
+
+      <label>
+        <span>Linked Video</span>
+        <select name="video_id">
+          {% set selected_video_id = request.form.get('video_id', deal['video_id'] if deal else '')|string %}
+          <option value="">Unassigned for now</option>
+          {% for video in videos %}
+            <option value="{{ video['id'] }}" {% if selected_video_id == video['id']|string %}selected{% endif %}>{{ video["title"] }} · {{ video["stage"] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="full">
+        <span>Notes</span>
+        <textarea name="notes" rows="5">{{ request.form.get('notes', deal['notes'] if deal else '') }}</textarea>
+      </label>
+
+      <div class="form-actions">
+        <button class="button" type="submit">{{ submit_label }}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

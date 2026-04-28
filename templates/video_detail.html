@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ video["title"] }}{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Video Detail Page</p>
+        <h3>{{ video["title"] }}</h3>
+        <p class="muted">{{ video["description"] or "No concept summary yet." }}</p>
+      </div>
+      <div class="topbar-actions">
+        <a class="button subtle" href="{{ url_for('videos_index') }}">Back</a>
+        <a class="button" href="{{ url_for('edit_video', video_id=video['id']) }}">Edit Video</a>
+      </div>
+    </div>
+
+    <section class="metric-grid">
+      <article class="metric-card">
+        <p class="label">Current Stage</p>
+        <h3>{{ video["stage"] }}</h3>
+      </article>
+      <article class="metric-card">
+        <p class="label">Risk Status</p>
+        <h3>{{ video["label"] }}</h3>
+      </article>
+      <article class="metric-card">
+        <p class="label">Expected / Actual Views</p>
+        <h3>{{ video["expected_views"] or "—" }} / {{ video["actual_views"] or "—" }}</h3>
+      </article>
+      <article class="metric-card">
+        <p class="label">Linked Money</p>
+        <h3>{% if video["deal_value"] is not none %}${{ "%.2f"|format(video["deal_value"]) }}{% else %}—{% endif %}</h3>
+      </article>
+    </section>
+
+    <section class="two-up">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Deadlines</p>
+            <h3>Timing</h3>
+          </div>
+        </div>
+        <div class="detail-list">
+          <div><span>Shoot date</span><strong>{{ video["shoot_date"] or "—" }}</strong></div>
+          <div><span>Publish deadline</span><strong>{{ video["publish_deadline"] or "—" }}</strong></div>
+          <div><span>Sponsor deadline</span><strong>{{ video["sponsor_deadline"] or "—" }}</strong></div>
+          <div><span>Views goal</span><strong>{{ video["view_guarantee"] or "—" }}</strong></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Linked Deal</p>
+            <h3>Sponsor Context</h3>
+          </div>
+        </div>
+        {% if video["deal_id"] %}
+          <div class="detail-list">
+            <div><span>Brand</span><strong>{{ video["brand_name"] }}</strong></div>
+            <div><span>Status</span><strong>{{ video["deal_status"] }}</strong></div>
+            <div><span>Type</span><strong>{{ video["deal_type"] }}</strong></div>
+            <div><span>Value</span><strong>${{ "%.2f"|format(video["deal_value"]) }}</strong></div>
+          </div>
+          <p class="detail-notes">{{ video["deal_notes"] or "No deal notes yet." }}</p>
+        {% else %}
+          <p class="empty">No deal linked yet.</p>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="two-up">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Assignments</p>
+            <h3>Team</h3>
+          </div>
+        </div>
+        {% if video["assignments"] %}
+          <div class="stack-list">
+            {% for assignment in video["assignments"] %}
+              <div class="row-card neutral">
+                <div>
+                  <strong>{{ assignment["role"] }}</strong>
+                  <p>{{ assignment["name"] }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty">No team members assigned yet.</p>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Format</p>
+            <h3>Performance Inputs</h3>
+          </div>
+        </div>
+        <div class="detail-list">
+          <div><span>Concept type</span><strong>{{ video["concept_type"] or "—" }}</strong></div>
+          <div><span>Effort</span><strong>{{ video["effort"] or "—" }}</strong></div>
+          <div><span>Length</span><strong>{{ video["length_minutes"] or "—" }}</strong></div>
+          <div><span>Tags</span><strong>{{ video["tags"] or "—" }}</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="two-up">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Checklist</p>
+            <h3>Execution Notes</h3>
+          </div>
+        </div>
+        <pre class="notes-block">{{ video["checklist"] or "No checklist yet." }}</pre>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Notes</p>
+            <h3>Context</h3>
+          </div>
+        </div>
+        <pre class="notes-block">{{ video["notes"] or "No notes yet." }}</pre>
+      </article>
+    </section>
+  </section>
+{% endblock %}

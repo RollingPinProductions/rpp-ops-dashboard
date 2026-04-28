@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block page_title %}Performance patterns by concept type.{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Content Performance Tracking</p>
+        <h3>See which formats earn the strongest view response.</h3>
+      </div>
+    </div>
+
+    <section class="two-up">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Formats</p>
+            <h3>Average Views by Concept Type</h3>
+          </div>
+        </div>
+        {% if concept_rows %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Concept Type</th>
+                  <th>Videos</th>
+                  <th>Avg Views</th>
+                  <th>Top Views</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in concept_rows %}
+                  <tr>
+                    <td>{{ row["concept_type"] }}</td>
+                    <td>{{ row["video_count"] }}</td>
+                    <td>{{ row["average_views"] or "—" }}</td>
+                    <td>{{ row["top_views"] or "—" }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="empty">Add concept types and views to unlock this view.</p>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Leaders</p>
+            <h3>Top Performing Videos</h3>
+          </div>
+        </div>
+        {% if recent_performance %}
+          <div class="stack-list">
+            {% for video in recent_performance %}
+              <div class="row-card neutral">
+                <div>
+                  <strong>{{ video["title"] }}</strong>
+                  <p>{{ video["concept_type"] or "Unlabeled" }}</p>
+                </div>
+                <span class="score-pill">{{ video["actual_views"] }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty">No view data yet.</p>
+        {% endif %}
+      </article>
+    </section>
+  </section>
+{% endblock %}

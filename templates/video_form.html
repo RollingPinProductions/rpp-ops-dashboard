@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Video Command Setup</p>
+        <h3>{{ form_title }}</h3>
+      </div>
+      <a class="button subtle" href="{{ url_for('videos_index') }}">Back to Videos</a>
+    </div>
+
+    <form method="post" class="panel form-grid wide-form">
+      <label class="full">
+        <span>Title</span>
+        <input type="text" name="title" value="{{ request.form.get('title', video['title'] if video else '') }}" required>
+      </label>
+
+      <label class="full">
+        <span>Description / Concept</span>
+        <textarea name="description" rows="4">{{ request.form.get('description', video['description'] if video else '') }}</textarea>
+      </label>
+
+      <label>
+        <span>Stage</span>
+        <select name="stage" required>
+          {% set selected_stage = request.form.get('stage', video['stage'] if video else 'Idea') %}
+          {% for option in stage_options %}
+            <option value="{{ option }}" {% if selected_stage == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Concept Type</span>
+        <select name="concept_type">
+          {% set selected_concept = request.form.get('concept_type', video['concept_type'] if video else '') %}
+          <option value="">Select concept type</option>
+          {% for option in concept_types %}
+            <option value="{{ option }}" {% if selected_concept == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Effort</span>
+        <select name="effort">
+          {% set selected_effort = request.form.get('effort', video['effort'] if video else '') %}
+          <option value="">Select effort</option>
+          {% for option in effort_options %}
+            <option value="{{ option }}" {% if selected_effort == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Timeline Feasibility</span>
+        <select name="timeline_feasibility">
+          {% set selected_timeline = request.form.get('timeline_feasibility', video['timeline_feasibility'] if video else '') %}
+          <option value="">Select timeline</option>
+          {% for option in timeline_options %}
+            <option value="{{ option }}" {% if selected_timeline == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Shoot Date</span>
+        <input type="date" name="shoot_date" value="{{ request.form.get('shoot_date', video['shoot_date'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Publish Deadline</span>
+        <input type="date" name="publish_deadline" value="{{ request.form.get('publish_deadline', video['publish_deadline'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Sponsor Deadline</span>
+        <input type="date" name="sponsor_deadline" value="{{ request.form.get('sponsor_deadline', video['sponsor_deadline'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Estimated Views</span>
+        <input type="number" name="estimated_views" min="0" step="1" value="{{ request.form.get('estimated_views', video['estimated_views'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Expected Views</span>
+        <input type="number" name="expected_views" min="0" step="1" value="{{ request.form.get('expected_views', video['expected_views'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Actual Views</span>
+        <input type="number" name="actual_views" min="0" step="1" value="{{ request.form.get('actual_views', video['actual_views'] if video else '') }}">
+      </label>
+
+      <label>
+        <span>Length (minutes)</span>
+        <input type="number" name="length_minutes" min="0" step="1" value="{{ request.form.get('length_minutes', video['length_minutes'] if video else '') }}">
+      </label>
+
+      <label class="full">
+        <span>Linked Deal</span>
+        <select name="linked_deal_id">
+          {% set current_deal_id = request.form.get('linked_deal_id', current_deal['id'] if current_deal else '')|string %}
+          <option value="">No linked deal</option>
+          {% for deal in deal_options %}
+            <option value="{{ deal['id'] }}" {% if current_deal_id == deal['id']|string %}selected{% endif %}>{{ deal["brand_name"] }} · ${{ "%.0f"|format(deal["deal_value"]) }} · {{ deal["status"] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="full">
+        <span>Tags</span>
+        <input type="text" name="tags" value="{{ request.form.get('tags', video['tags'] if video else '') }}" placeholder="challenge, food, travel">
+      </label>
+
+      <label class="checkbox-row full">
+        {% set sponsor_checked = request.form.get('sponsor_potential', video['sponsor_potential'] if video else '') %}
+        <input type="checkbox" name="sponsor_potential" {% if sponsor_checked %}checked{% endif %}>
+        <span>High sponsor potential</span>
+      </label>
+
+      <section class="full nested-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Assignments</p>
+            <h3>Team Members</h3>
+          </div>
+        </div>
+        <div class="assignment-grid">
+          {% for role in team_roles %}
+            <label>
+              <span>{{ role }}</span>
+              <select name="role_{{ role.lower() }}">
+                <option value="">Unassigned</option>
+                {% for member in team_members %}
+                  <option value="{{ member['id'] }}" {% if selected_assignments.get(role) == member['id']|string %}selected{% endif %}>{{ member["name"] }}{% if member["specialty"] %} · {{ member["specialty"] }}{% endif %}</option>
+                {% endfor %}
+              </select>
+            </label>
+          {% endfor %}
+        </div>
+      </section>
+
+      <label class="full">
+        <span>Checklist</span>
+        <textarea name="checklist" rows="5" placeholder="Script, shot list, sponsor talking points...">{{ request.form.get('checklist', video['checklist'] if video else '') }}</textarea>
+      </label>
+
+      <label class="full">
+        <span>Notes</span>
+        <textarea name="notes" rows="5">{{ request.form.get('notes', video['notes'] if video else '') }}</textarea>
+      </label>
+
+      <div class="form-actions">
+        <button class="button" type="submit">{{ submit_label }}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>YouTube Ops Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+          <span class="brand-mark">YO</span>
+          <div>
+            <p>YouTube Ops Manager</p>
+            <h1>Creator OS</h1>
+          </div>
+        </a>
+
+        <nav class="sidebar-nav">
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('videos_index') }}">Videos</a>
+          <a href="{{ url_for('ideas_index') }}">Ideas</a>
+          <a href="{{ url_for('deals_index') }}">Deals</a>
+          <a href="{{ url_for('analytics') }}">Analytics</a>
+          <a href="{{ url_for('team') }}">Team</a>
+        </nav>
+      </aside>
+
+      <div class="content-shell">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Operating System</p>
+            <h2>{% block page_title %}Run the business, not just the checklist.{% endblock %}</h2>
+          </div>
+          <div class="topbar-actions">
+            <a class="button subtle" href="{{ url_for('create_idea') }}">New Idea</a>
+            <a class="button subtle" href="{{ url_for('create_deal') }}">New Deal</a>
+            <a class="button" href="{{ url_for('create_video') }}">New Video</a>
+          </div>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-stack">
+              {% for message in messages %}
+                <div class="flash">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <main class="page">
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

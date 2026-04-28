@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+  <section class="page-section">
+    <div class="section-headline">
+      <div>
+        <p class="eyebrow">Idea Planning</p>
+        <h3>{{ form_title }}</h3>
+      </div>
+      <a class="button subtle" href="{{ url_for('ideas_index') }}">Back to Ideas</a>
+    </div>
+
+    <form method="post" class="panel form-grid">
+      <label class="full">
+        <span>Title</span>
+        <input type="text" name="title" value="{{ request.form.get('title', idea['title'] if idea else '') }}" required>
+      </label>
+
+      <label class="full">
+        <span>Tags</span>
+        <input type="text" name="tags" value="{{ request.form.get('tags', idea['tags'] if idea else '') }}">
+      </label>
+
+      <label>
+        <span>Concept Type</span>
+        <select name="concept_type">
+          {% set selected_concept = request.form.get('concept_type', idea['concept_type'] if idea else '') %}
+          <option value="">Select concept type</option>
+          {% for option in concept_types %}
+            <option value="{{ option }}" {% if selected_concept == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Effort</span>
+        <select name="effort">
+          {% set selected_effort = request.form.get('effort', idea['effort'] if idea else '') %}
+          <option value="">Select effort</option>
+          {% for option in effort_options %}
+            <option value="{{ option }}" {% if selected_effort == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        <span>Estimated Views</span>
+        <input type="number" name="estimated_views" min="0" step="1" value="{{ request.form.get('estimated_views', idea['estimated_views'] if idea else '') }}">
+      </label>
+
+      <label>
+        <span>Timeline Feasibility</span>
+        <select name="timeline_feasibility">
+          {% set selected_timeline = request.form.get('timeline_feasibility', idea['timeline_feasibility'] if idea else '') %}
+          <option value="">Select timeline</option>
+          {% for option in timeline_options %}
+            <option value="{{ option }}" {% if selected_timeline == option %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="checkbox-row full">
+        {% set sponsor_checked = request.form.get('sponsor_potential', idea['sponsor_potential'] if idea else '') %}
+        <input type="checkbox" name="sponsor_potential" {% if sponsor_checked %}checked{% endif %}>
+        <span>High sponsor potential</span>
+      </label>
+
+      {% if idea %}
+        <label>
+          <span>Status</span>
+          <select name="status">
+            {% set selected_status = request.form.get('status', idea['status']) %}
+            {% for option in ['Open', 'In review', 'Promoted'] %}
+              <option value="{{ option }}" {% if selected_status == option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      {% endif %}
+
+      <label class="full">
+        <span>Notes</span>
+        <textarea name="notes" rows="5">{{ request.form.get('notes', idea['notes'] if idea else '') }}</textarea>
+      </label>
+
+      <div class="form-actions">
+        <button class="button" type="submit">{{ submit_label }}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
